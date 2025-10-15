@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PM Fragrance – Product Catalog</title>
+<title> EL-D.Vogue Product Catalog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -83,6 +83,7 @@ header {
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   background: #fff;
+  display: none;
   animation: fade .4s ease;
 }
 .banner-box img {
@@ -196,36 +197,6 @@ header {
 .fade {animation:fade .3s ease forwards;}
 @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-/* === Shimmer Placeholder === */
-.skeleton {
-  background: linear-gradient(90deg, #f0ebe1 25%, #fff8f1 37%, #f0ebe1 63%);
-  background-size: 400% 100%;
-  animation: shimmer 1.4s ease infinite;
-  border-radius: 8px;
-}
-@keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-.skeleton-card {
-  background: var(--milk-soft);
-  border-radius: var(--radius);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.05);
-  overflow: hidden;
-  height: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-}
-.skeleton-img {
-  height: 150px;
-  width: 100%;
-  border-radius: 8px;
-}
-.skeleton-text { height: 12px; width: 80%; }
-.skeleton-price { height: 10px; width: 40%; }
-
 /* === Footer === */
 footer {
   margin-top: auto;
@@ -246,8 +217,8 @@ footer span {
 <h1 class="glow-title">LEADING EDGE VIRTUAL INSIGHT [L.E.V.I]</h1>
 
 <header>
-  <div class="logo">PMF</div>
-  <h2 style="font-size:18px;">PM Fragrance</h2>
+  <div class="logo">Eld-V</div>
+  <h2 style="font-size:18px;">EL-D.Vogue</h2>
 </header>
 
 <div class="search">
@@ -286,7 +257,6 @@ const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 const catalog = document.getElementById("catalog");
 const q = document.getElementById("q");
 const backdrop = document.getElementById("backdrop");
@@ -378,17 +348,15 @@ q.oninput=()=>{
 // === Banner Ad Logic ===
 const bannerBox = document.getElementById("bannerBox");
 const bannerClose = document.getElementById("bannerClose");
-const bannerLink = document.getElementById("bannerLink");
 
-let bannerClicked = false;
+// Show banner automatically on load
+window.addEventListener("load", () => {
+  bannerBox.style.display = "block";
+});
 
+// Close button hides banner
 bannerClose.onclick = () => {
-  if (!bannerClicked) {
-    bannerClicked = true;
-    window.open(bannerLink.href, "_blank");
-  } else {
-    bannerBox.style.display = "none";
-  }
+  bannerBox.style.display = "none";
 };
 </script>
 </body>
