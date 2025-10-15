@@ -26,8 +26,6 @@ h1 {
   padding: 20px 0;
   margin-bottom: 10px;
 }
-
-/* Notice styling */
 .notice {
   background: #fff3e0;
   border-left: 5px solid #d9b07e;
@@ -48,8 +46,6 @@ h1 {
 .notice a:hover {
   text-decoration: underline;
 }
-
-/* Form */
 form {
   background: #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -81,8 +77,7 @@ button {
 button:hover {
   background: #c69b6a;
 }
- a{color:white;}
-/* Table */
+a { color:white; }
 .table-container {
   margin-top: 30px;
   width: 95%;
@@ -135,8 +130,6 @@ td img {
   color: white;
 }
 .delete-btn:hover { background: #d32f2f; }
-
-/* Mobile adjustments */
 @media (max-width: 600px) {
   table, thead, tbody, th, td, tr {
     display: block;
@@ -147,9 +140,7 @@ td img {
     border-radius: 8px;
     padding: 10px;
   }
-  th {
-    display: none;
-  }
+  th { display: none; }
   td {
     display: flex;
     justify-content: space-between;
@@ -167,11 +158,11 @@ td img {
 </head>
 
 <body>
-  <h1> <a href=" https://el-d-vogue.vercel.app/">⚒️EL-D VOGUE </a></h1>
+  <h1><a href="https://el-d-vogue.vercel.app/">⚒️ EL-D VOGUE</a></h1>
 
   <div class="notice">
     <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
-    You can only upload images up to <strong>1MB</strong>.  
+    You can only upload images up to <strong>2MB</strong>.  
     <br>
     👉 <a href="https://leading-edge-v-i.vercel.app/" target="_blank">View or change your plan here</a>.
   </div>
@@ -227,8 +218,10 @@ form.addEventListener("submit", async (e)=>{
   const file = imgFile.files[0];
 
   if(!file){ alert("Please select an image."); return; }
-  if(file.size > 2 * 2024 * 2024){
-    alert("❌ Free plan limit reached. Please upload images smaller than 1MB or upgrade your plan.");
+
+  // ✅ Changed to 2MB (was 1MB)
+  if(file.size > 2 * 1024 * 1024){
+    alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
     return;
   }
 
@@ -290,5 +283,4 @@ async function deleteProduct(id){
 fetchProducts();
 </script>
 </body>
-  </html>
-  
+</html>
