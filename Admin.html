@@ -220,7 +220,7 @@ form.addEventListener("submit", async (e)=>{
   if(!file){ alert("Please select an image."); return; }
 
   // ✅ Changed to 2MB (was 1MB)
-  if(file.size > 2 * 1024 * 1024){
+  if(file.size > 3 * 1024 * 1024){
     alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
     return;
   }
