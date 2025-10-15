@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PM Fragrance– Product Catalog</title>
+<title>PM Fragrance – Product Catalog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -74,6 +74,43 @@ header {
   flex:1;
   font-size:15px;
 }
+
+/* === Banner Box === */
+.banner-box {
+  position: relative;
+  margin: 12px 0 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: #fff;
+  animation: fade .4s ease;
+}
+.banner-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.banner-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  line-height: 22px;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.banner-close:hover {
+  background: rgba(255,255,255,1);
+}
+
 .catalog {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -217,6 +254,14 @@ footer span {
   <input id="q" placeholder="Search products...">
 </div>
 
+<!-- Banner Ad Box -->
+<div class="banner-box" id="bannerBox">
+  <a href="https://your-link-here.com" target="_blank" id="bannerLink">
+    <img src="https://via.placeholder.com/800x150.png?text=Shop+Now+at+PM+Fragrance" alt="Banner Ad">
+  </a>
+  <button class="banner-close" id="bannerClose">×</button>
+</div>
+
 <div class="catalog" id="catalog"></div>
 
 <!-- Modal -->
@@ -328,6 +373,22 @@ whatsapp.onclick=()=>{
 q.oninput=()=>{
   const val=q.value.toLowerCase();
   render(products.filter(p=>p.title.toLowerCase().includes(val)));
+};
+
+// === Banner Ad Logic ===
+const bannerBox = document.getElementById("bannerBox");
+const bannerClose = document.getElementById("bannerClose");
+const bannerLink = document.getElementById("bannerLink");
+
+let bannerClicked = false;
+
+bannerClose.onclick = () => {
+  if (!bannerClicked) {
+    bannerClicked = true;
+    window.open(bannerLink.href, "_blank");
+  } else {
+    bannerBox.style.display = "none";
+  }
 };
 </script>
 </body>
