@@ -227,7 +227,7 @@ form.addEventListener("submit", async (e)=>{
   const file = imgFile.files[0];
 
   if(!file){ alert("Please select an image."); return; }
-  if(file.size > 1 * 1024 * 1024){
+  if(file.size > 2 * 2024 * 2024){
     alert("❌ Free plan limit reached. Please upload images smaller than 1MB or upgrade your plan.");
     return;
   }
