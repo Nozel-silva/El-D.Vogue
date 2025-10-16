@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title> EL-D VOGUE Product Catalog</title>
+<title>EL-D VOGUE Product Catalog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -340,10 +340,14 @@ whatsapp.onclick=()=>{
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
-// Search filter
-q.oninput=()=>{
-  const val=q.value.toLowerCase();
-  render(products.filter(p=>p.title.toLowerCase().includes(val)));
+// === Enhanced Search (by title, price, and description)
+q.oninput = () => {
+  const val = q.value.toLowerCase();
+  render(products.filter(p =>
+    p.title.toLowerCase().includes(val) ||
+    p.price.toLowerCase().includes(val) ||
+    (p.description && p.description.toLowerCase().includes(val))
+  ));
 };
 
 // === Banner Ad Logic ===
