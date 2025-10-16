@@ -61,18 +61,34 @@ header {
   width:100%;
   margin:10px 0;
   display:flex;
-  align-items:center;
+  flex-direction:column;
+  gap:6px;
+  align-items:flex-start;
   background:#fff;
   border:1px solid #eee;
   border-radius:10px;
   padding:8px 12px;
   box-shadow:0 4px 8px rgba(0,0,0,0.04);
 }
+.search-row {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
 .search input {
   border:none;
   outline:none;
   flex:1;
   font-size:15px;
+  padding:8px 6px;
+}
+
+/* results count */
+#resultsCount {
+  font-size:13px;
+  color:var(--muted);
+  padding-left:4px;
 }
 
 /* === Banner Box === */
@@ -116,6 +132,7 @@ header {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
+  margin-top:8px;
 }
 @media(max-width:600px){
   .catalog{grid-template-columns:1fr;}
@@ -197,6 +214,14 @@ header {
 .fade {animation:fade .3s ease forwards;}
 @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
+/* small message when no results */
+.empty-msg {
+  text-align:center;
+  color:var(--muted);
+  padding:24px;
+  grid-column:1/-1;
+}
+
 /* === Footer === */
 footer {
   margin-top: auto;
@@ -222,7 +247,10 @@ footer span {
 </header>
 
 <div class="search">
-  <input id="q" placeholder="Search products...">
+  <div class="search-row">
+    <input id="q" placeholder="Search products by name, price or description...">
+  </div>
+  <div id="resultsCount">Showing all products</div>
 </div>
 
 <!-- Banner Ad Box -->
@@ -260,6 +288,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const catalog = document.getElementById("catalog");
 const q = document.getElementById("q");
+const resultsCount = document.getElementById("resultsCount");
 const backdrop = document.getElementById("backdrop");
 const mdImg = document.getElementById("mdImg");
 const mdTitle = document.getElementById("mdTitle");
@@ -271,15 +300,20 @@ const closeBtn = document.getElementById("close");
 let products = [];
 let active = null;
 
+/** helper: normalize string -> lowercase alphanumeric only
+ *  removes punctuation, spaces, currency symbols etc so '₦5,000' -> '5000'
+ */
+function normalize(val){
+  if(val === undefined || val === null) return "";
+  return String(val).toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
 function showSkeleton(){
   catalog.innerHTML = "";
   for(let i=0; i<4; i++){
     catalog.innerHTML += `
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-img"></div>
-        <div class="skeleton skeleton-text"></div>
-        <div class="skeleton skeleton-price"></div>
-        <div class="skeleton skeleton-text" style="width:60%;"></div>
+      <div class="card skeleton-card" style="height:220px;display:flex;align-items:center;justify-content:center;color:var(--muted);">
+        Loading...
       </div>
     `;
   }
@@ -291,19 +325,23 @@ async function fetchProducts(){
   if(error){
     console.error(error);
     catalog.innerHTML = "<p style='color:red;text-align:center;'>Failed to load products.</p>";
+    resultsCount.textContent = "Failed to load products";
     return;
   }
-  products = data;
+  products = data || [];
   render(products);
 }
 fetchProducts();
 
 function render(list){
   catalog.innerHTML = "";
-  if(list.length === 0){
-    catalog.innerHTML = "<p style='text-align:center;'>No products found.</p>";
+  if(!list || list.length === 0){
+    catalog.innerHTML = `<div class="empty-msg">No products found.</div>`;
+    resultsCount.textContent = "0 results found";
     return;
   }
+  // update results count
+  resultsCount.textContent = `${list.length} result${list.length === 1 ? '' : 's'} found`;
   list.forEach(p=>{
     const c = document.createElement("div");
     c.className = "card fade";
@@ -312,7 +350,7 @@ function render(list){
       <div class="card-body">
         <h3>${p.title}</h3>
         <div class="price">${p.price}</div>
-        <p class="desc">${p.description}</p>
+        <p class="desc">${p.description || ''}</p>
         <button class="btn">View</button>
       </div>`;
     c.querySelector(".btn").onclick=()=>openModal(p);
@@ -340,15 +378,29 @@ whatsapp.onclick=()=>{
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
-// === Enhanced Search (by title, price, and description)
-q.oninput = () => {
-  const val = q.value.toLowerCase();
-  render(products.filter(p =>
-    p.title.toLowerCase().includes(val) ||
-    p.price.toLowerCase().includes(val) ||
-    (p.description && p.description.toLowerCase().includes(val))
-  ));
-};
+// Enhanced Search (title, price, description) with normalization
+q.addEventListener('input', () => {
+  const raw = q.value || '';
+  const val = raw.trim();
+  const valNorm = normalize(val);
+
+  // if query is empty -> show all
+  if(valNorm === '') {
+    render(products);
+    return;
+  }
+
+  const filtered = products.filter(p => {
+    const titleNorm = normalize(p.title);
+    const priceNorm = normalize(p.price);
+    const descNorm = normalize(p.description || '');
+
+    // match if the normalized query is a substring of any normalized field
+    return titleNorm.includes(valNorm) || priceNorm.includes(valNorm) || descNorm.includes(valNorm);
+  });
+
+  render(filtered);
+});
 
 // === Banner Ad Logic ===
 const bannerBox = document.getElementById("bannerBox");
