@@ -4,417 +4,478 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EL-D VOGUE Product Catalog</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --milk-bg: #fffdf8;
-  --milk-accent: #d9b07e;
-  --milk-soft: #fff6eb;
-  --text: #222;
-  --muted: #776b5d;
-  --radius: 14px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body {
-  font-family: "Inter", sans-serif;
-  background: var(--milk-bg);
-  color: var(--text);
-  line-height: 1.5;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  :root{
+    --bg: #070707;
+    --panel: #0f1112;
+    --muted: #9aa3a8;
+    --gold: #d9b07e;
+    --soft-gold: rgba(217,176,126,0.12);
+    --glass: rgba(255,255,255,0.03);
+    --radius: 14px;
+    --accent-strong: #ffd9a8;
+  }
 
-/* === Glowing Heading === */
-.glow-title {
-  text-align: center;
-  font-weight: 600;
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: var(--milk-accent);
-  text-shadow: 0 0 12px rgba(217,176,126,0.6);
-  animation: glowFade 2s ease-in-out infinite;
-  margin-bottom: 8px;
-}
-@keyframes glowFade {
-  0%, 100% { opacity: 0; text-shadow: 0 0 0 rgba(217,176,126,0); }
-  50% { opacity: 1; text-shadow: 0 0 14px rgba(217,176,126,0.8); }
-}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body {
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(180deg,#050506 0%, #0b0b0c 50%, #0f1112 100%);
+    color: #e6e6e6;
+    line-height:1.5;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
-.logo {
-  font-weight:700;
-  font-size:20px;
-  background:var(--milk-accent);
-  color:white;
-  padding:10px 14px;
-  border-radius:10px;
-}
-.search {
-  width:100%;
-  margin:10px 0;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  align-items:flex-start;
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:10px;
-  padding:8px 12px;
-  box-shadow:0 4px 8px rgba(0,0,0,0.04);
-}
-.search-row {
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.search input {
-  border:none;
-  outline:none;
-  flex:1;
-  font-size:15px;
-  padding:8px 6px;
-}
+  /* Glowing Header */
+  .glow-title {
+    text-align:center;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:2px;
+    color:var(--gold);
+    text-shadow: 0 0 18px rgba(217,176,126,0.55);
+    animation: softGlow 2.8s ease-in-out infinite;
+    margin-bottom:14px;
+  }
+  @keyframes softGlow{
+    0%,100%{opacity:0.85;text-shadow:0 0 6px rgba(217,176,126,0.18)}
+    50%{opacity:1;text-shadow:0 0 22px rgba(217,176,126,0.45)}
+  }
 
-/* results count */
-#resultsCount {
-  font-size:13px;
-  color:var(--muted);
-  padding-left:4px;
-}
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    gap:12px;
+  }
 
-/* === Banner Box === */
-.banner-box {
-  position: relative;
-  margin: 12px 0 18px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  background: #fff;
-  display: none;
-  animation: fade .4s ease;
-}
-.banner-box img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.banner-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
-  line-height: 22px;
-  text-align: center;
-  color: #333;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-.banner-close:hover {
-  background: rgba(255,255,255,1);
-}
+  .logo{
+    font-weight:700;
+    font-size:20px;
+    background: linear-gradient(90deg, rgba(217,176,126,0.95), rgba(240,200,145,0.9));
+    color:#081014;
+    padding:10px 14px;
+    border-radius:10px;
+    box-shadow: 0 6px 22px rgba(217,176,126,0.08), inset 0 -6px 18px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
 
-.catalog {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:8px;
-}
-@media(max-width:600px){
-  .catalog{grid-template-columns:1fr;}
-}
-.card {
-  background:var(--milk-soft);
-  border-radius:var(--radius);
-  overflow:hidden;
-  box-shadow:0 6px 14px rgba(0,0,0,0.05);
-  transition:transform .2s ease;
-}
-.card:active {transform:scale(0.97);}
-.card img {
-  width:100%;
-  height:160px;
-  object-fit:cover;
-}
-.card-body {
-  padding:10px 12px;
-}
-.card-body h3 {
-  font-size:16px;
-  margin-bottom:4px;
-}
-.price {
-  color:var(--milk-accent);
-  font-weight:700;
-}
-.desc {
-  font-size:13px;
-  color:var(--muted);
-  margin-top:4px;
-  min-height:36px;
-}
-.btn {
-  margin-top:8px;
-  background:var(--milk-accent);
-  color:white;
-  border:none;
-  border-radius:8px;
-  padding:8px 10px;
-  width:100%;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-}
+  header h2{
+    font-size:18px;
+    color: #f3efe6;
+    font-weight:600;
+    letter-spacing:0.6px;
+  }
 
-/* === Modal === */
-.modal-backdrop {
-  position:fixed;inset:0;background:rgba(0,0,0,0.6);
-  display:none;align-items:center;justify-content:center;z-index:50;
-}
-.modal {
-  position:relative;
-  background:white;
-  width:90%;
-  max-width:420px;
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.3);
-  animation:fade .3s ease forwards;
-}
-.modal img {
-  width:100%;
-  border-radius:10px;
-  height:240px;
-  object-fit:cover;
-}
-.close {
-  position:absolute;
-  top:10px;
-  right:14px;
-  background:none;
-  border:none;
-  color:#444;
-  font-size:24px;
-  cursor:pointer;
-}
-.fade {animation:fade .3s ease forwards;}
-@keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .search {
+    width:100%;
+    margin:16px 0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius:12px;
+    padding:10px;
+    box-shadow: 0 10px 30px rgba(2,2,2,0.6);
+    backdrop-filter: blur(6px);
+  }
 
-/* small message when no results */
-.empty-msg {
-  text-align:center;
-  color:var(--muted);
-  padding:24px;
-  grid-column:1/-1;
-}
+  .search-row{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
 
-/* === Footer === */
-footer {
-  margin-top: auto;
-  text-align: center;
-  font-size: 13px;
-  color: var(--muted);
-  padding: 12px 0;
-}
-footer span {
-  color: var(--milk-accent);
-  font-weight: 600;
-}
+  .search input{
+    border:none;
+    outline:none;
+    flex:1;
+    font-size:15px;
+    padding:10px 12px;
+    background:transparent;
+    color:var(--accent-strong);
+    border-radius:8px;
+  }
+
+  #resultsCount{
+    font-size:13px;
+    color:var(--muted);
+    padding-left:4px;
+  }
+
+  /* Banner Box */
+  .banner-box {
+    position: relative;
+    margin: 12px 0 18px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    background: linear-gradient(90deg, rgba(217,176,126,0.06), rgba(0,0,0,0.12));
+    display: none;
+    animation: fadeInUp .45s ease both;
+    border: 1px solid rgba(217,176,126,0.07);
+  }
+  .banner-box img{ width:100%; height:auto; display:block; object-fit:cover; filter: saturate(0.95) contrast(1.02); }
+  .banner-close {
+    position:absolute; top:10px; right:12px;
+    background: rgba(0,0,0,0.45);
+    border:none; color:var(--gold); font-size:18px; cursor:pointer;
+    width:34px; height:34px; border-radius:50%; backdrop-filter: blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+  }
+  .banner-close:hover{ transform:scale(1.04); background: rgba(0,0,0,0.6); }
+
+  @keyframes fadeInUp {
+    from { opacity:0; transform: translateY(10px) scale(0.995); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* Catalog grid */
+  .catalog {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:16px;
+    margin-top:10px;
+    align-items:start;
+  }
+  @media(max-width:900px){ .catalog{ grid-template-columns:1fr; } }
+
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: var(--radius);
+    overflow:hidden;
+    box-shadow: 0 8px 30px rgba(2,2,2,0.6);
+    transition: transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s ease, opacity .3s ease;
+    transform-origin: center;
+    will-change: transform, box-shadow;
+    opacity:0;
+    transform: translateY(14px) scale(0.995);
+    border: 1px solid rgba(255,255,255,0.02);
+  }
+
+  .card.show{ opacity:1; transform:none; animation:popIn .45s ease both; }
+  @keyframes popIn{
+    0%{ transform: translateY(14px) scale(.985); opacity:0; }
+    60%{ transform: translateY(-6px) scale(1.02); opacity:1; }
+    100%{ transform:none; opacity:1; }
+  }
+
+  .card img {
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    display:block;
+    transition: transform .7s cubic-bezier(.2,.9,.3,1), filter .4s ease;
+  }
+
+  .card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 18px 50px rgba(2,2,2,0.75); }
+  .card:hover img { transform: scale(1.06); filter: brightness(1.02) contrast(1.03); }
+
+  .card-body {
+    padding:14px;
+  }
+  .card-body h3 {
+    font-size:16px;
+    margin-bottom:6px;
+    color:#fff8f1;
+    letter-spacing:0.2px;
+  }
+  .price {
+    color: var(--gold);
+    font-weight:700;
+    font-size:15px;
+  }
+  .desc {
+    font-size:13px;
+    color:var(--muted);
+    margin-top:8px;
+    min-height:40px;
+  }
+  .btn {
+    margin-top:12px;
+    background: linear-gradient(180deg,var(--gold), #c89e67);
+    color:#071014;
+    border:none;
+    border-radius:10px;
+    padding:10px 12px;
+    width:100%;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 10px 30px rgba(217,176,126,0.12);
+  }
+  .btn:active{ transform: translateY(1px) scale(.998); }
+  .btn:hover{ transform: translateY(-3px) scale(1.005); box-shadow: 0 16px 36px rgba(217,176,126,0.18); }
+
+  /* Skeleton (loading) card */
+  .skeleton-card{
+    display:flex;align-items:center;justify-content:center;
+    background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    color:var(--muted);
+    height:220px;
+    font-weight:600;
+    border: 1px dashed rgba(255,255,255,0.02);
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position:fixed; inset:0; background: rgba(0,0,0,0.6);
+    display:none; align-items:center; justify-content:center; z-index:50;
+    animation: backdropIn .18s ease;
+  }
+  @keyframes backdropIn{ from{opacity:0} to{opacity:1} }
+
+  .modal {
+    position:relative;
+    background: linear-gradient(180deg,#0b0b0b, #111214);
+    width:92%; max-width:520px;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 30px 90px rgba(2,2,2,0.8);
+    transform-origin:center;
+    animation: modalPop .28s cubic-bezier(.2,.9,.3,1) both;
+    border: 1px solid rgba(217,176,126,0.06);
+  }
+  @keyframes modalPop{
+    0%{ transform: translateY(12px) scale(.985); opacity:0; }
+    60%{ transform: translateY(-8px) scale(1.02); opacity:1; }
+    100%{ transform:none; opacity:1; }
+  }
+  .modal img{
+    width:100%; border-radius:10px; height:320px; object-fit:cover; display:block;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+  }
+  .close{
+    position:absolute; top:12px; right:14px; background:none; border:none; color:var(--gold); font-size:22px; cursor:pointer;
+  }
+
+  /* Empty message */
+  .empty-msg{
+    text-align:center; color:var(--muted); padding:28px; grid-column:1/-1;
+  }
+
+  /* Footer */
+  footer{
+    margin-top: 18px;
+    text-align:center;
+    font-size:13px;
+    color:var(--muted);
+    padding:14px 0;
+  }
+  footer span{ color:var(--gold); font-weight:700; }
+
+  /* small responsive tweaks */
+  @media(max-width:520px){
+    .card img{ height:180px; }
+    .modal img{ height:220px; }
+    .glow-title{ font-size:11px; letter-spacing:1.5px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Glowing Header -->
-<h1 class="glow-title">LEADING EDGE VIRTUAL INSIGHT [L.E.V.I]</h1>
+  <!-- Glowing Header -->
+  <h1 class="glow-title">LEADING EDGE VIRTUAL INSIGHT — EL-D VOGUE</h1>
 
-<header>
-  <div class="logo">EL-D V</div>
-  <h2 style="font-size:18px;">EL-D VOGUE</h2>
-</header>
+  <header>
+    <div class="logo">EL-D V</div>
+    <h2>EL-D VOGUE</h2>
+  </header>
 
-<div class="search">
-  <div class="search-row">
-    <input id="q" placeholder="Search products by name, price or description...">
+  <div class="search" role="search" aria-label="Search products">
+    <div class="search-row">
+      <input id="q" placeholder="Search products by name, price or description..." aria-label="Search products">
+    </div>
+    <div id="resultsCount">Showing all products</div>
   </div>
-  <div id="resultsCount">Showing all products</div>
-</div>
 
-<!-- Banner Ad Box -->
-<div class="banner-box" id="bannerBox">
-  <b>Ad</b>
-  <a href="https://x.com/safe_goals/status/1972048444429947306" target="_blank" id="bannerLink">
-    <img src="Ad.jpeg" alt="Banner Ad">
-  </a>
-  <button class="banner-close" id="bannerClose">×</button>
-</div>
-
-<div class="catalog" id="catalog"></div>
-
-<!-- Modal -->
-<div class="modal-backdrop" id="backdrop">
-  <div class="modal">
-    <button class="close" id="close">×</button>
-    <img id="mdImg" alt="">
-    <h3 id="mdTitle" style="margin-top:10px;font-size:18px;"></h3>
-    <p id="mdPrice" style="color:var(--milk-accent);font-weight:700;margin:6px 0;font-size:16px;"></p>
-    <p id="mdDesc" style="color:var(--muted);font-size:14px;margin-bottom:14px;"></p>
-    <button class="btn" id="whatsapp">Order via WhatsApp</button>
+  <!-- Banner Ad Box -->
+  <div class="banner-box" id="bannerBox" aria-hidden="true">
+    <a href="https://x.com/safe_goals/status/1972048444429947306" target="_blank" id="bannerLink" aria-label="Ad link">
+      <!-- Replace Ad.jpg with your banner image path -->
+      <img src="Ad.jpeg" alt="Promoted banner — click to view">
+    </a>
+    <button class="banner-close" id="bannerClose" aria-label="Close banner">×</button>
   </div>
-</div>
 
-<!-- Footer -->
-<footer>
-  Powered by <span>Leading Edge Virtual Insight (L.E.V.I)</span>
-</footer>
+  <div class="catalog" id="catalog" aria-live="polite"></div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+      <button class="close" id="close" aria-label="Close">×</button>
+      <img id="mdImg" alt="">
+      <h3 id="mdTitle" style="margin-top:12px;font-size:18px;color:#fff8f1;"></h3>
+      <p id="mdPrice" style="color:var(--gold);font-weight:700;margin:6px 0;font-size:16px;"></p>
+      <p id="mdDesc" style="color:var(--muted);font-size:14px;margin-bottom:14px;"></p>
+      <button class="btn" id="whatsapp">Order via WhatsApp</button>
+    </div>
+  </div>
+
+  <footer>
+    Powered by <span>Leading Edge Virtual Insight (L.E.V.I)</span>
+  </footer>
 
 <script>
-const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
+  // Supabase config (keep as-is or replace)
+  const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const catalog = document.getElementById("catalog");
-const q = document.getElementById("q");
-const resultsCount = document.getElementById("resultsCount");
-const backdrop = document.getElementById("backdrop");
-const mdImg = document.getElementById("mdImg");
-const mdTitle = document.getElementById("mdTitle");
-const mdPrice = document.getElementById("mdPrice");
-const mdDesc = document.getElementById("mdDesc");
-const whatsapp = document.getElementById("whatsapp");
-const closeBtn = document.getElementById("close");
+  // DOM refs
+  const catalog = document.getElementById("catalog");
+  const q = document.getElementById("q");
+  const resultsCount = document.getElementById("resultsCount");
+  const backdrop = document.getElementById("backdrop");
+  const mdImg = document.getElementById("mdImg");
+  const mdTitle = document.getElementById("mdTitle");
+  const mdPrice = document.getElementById("mdPrice");
+  const mdDesc = document.getElementById("mdDesc");
+  const whatsapp = document.getElementById("whatsapp");
+  const closeBtn = document.getElementById("close");
+  const bannerBox = document.getElementById("bannerBox");
+  const bannerClose = document.getElementById("bannerClose");
 
-let products = [];
-let active = null;
+  let products = [];
+  let active = null;
 
-/** helper: normalize string -> lowercase alphanumeric only
- *  removes punctuation, spaces, currency symbols etc so '₦5,000' -> '5000'
- */
-function normalize(val){
-  if(val === undefined || val === null) return "";
-  return String(val).toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
-function showSkeleton(){
-  catalog.innerHTML = "";
-  for(let i=0; i<4; i++){
-    catalog.innerHTML += `
-      <div class="card skeleton-card" style="height:220px;display:flex;align-items:center;justify-content:center;color:var(--muted);">
-        Loading...
-      </div>
-    `;
+  // Normalize helper: lowercase + remove non-alphanumerics
+  function normalize(val){
+    if(val === undefined || val === null) return "";
+    return String(val).toLowerCase().replace(/[^a-z0-9]/g, '');
   }
-}
 
-async function fetchProducts(){
-  showSkeleton();
-  const { data, error } = await supabase.from("pmf").select("*").order("id",{ascending:false});
-  if(error){
-    console.error(error);
-    catalog.innerHTML = "<p style='color:red;text-align:center;'>Failed to load products.</p>";
-    resultsCount.textContent = "Failed to load products";
-    return;
+  function showSkeleton(){
+    catalog.innerHTML = "";
+    for(let i=0;i<4;i++){
+      const s = document.createElement('div');
+      s.className = 'card skeleton-card';
+      s.textContent = 'Loading...';
+      catalog.appendChild(s);
+    }
   }
-  products = data || [];
-  render(products);
-}
-fetchProducts();
 
-function render(list){
-  catalog.innerHTML = "";
-  if(!list || list.length === 0){
-    catalog.innerHTML = `<div class="empty-msg">No products found.</div>`;
-    resultsCount.textContent = "0 results found";
-    return;
+  async function fetchProducts(){
+    showSkeleton();
+    try{
+      const { data, error } = await supabase.from("pmf").select("*").order("id",{ascending:false});
+      if(error) throw error;
+      products = data || [];
+      render(products);
+    }catch(err){
+      console.error(err);
+      catalog.innerHTML = "<div class='empty-msg'>Failed to load products. Check console for details.</div>";
+      resultsCount.textContent = "Failed to load products";
+    }
   }
-  // update results count
-  resultsCount.textContent = `${list.length} result${list.length === 1 ? '' : 's'} found`;
-  list.forEach(p=>{
-    const c = document.createElement("div");
-    c.className = "card fade";
-    c.innerHTML = `
-      <img src="${p.img_url}" alt="${p.title}">
-      <div class="card-body">
-        <h3>${p.title}</h3>
-        <div class="price">${p.price}</div>
-        <p class="desc">${p.description || ''}</p>
-        <button class="btn">View</button>
-      </div>`;
-    c.querySelector(".btn").onclick=()=>openModal(p);
-    catalog.appendChild(c);
+  fetchProducts();
+
+  function render(list){
+    catalog.innerHTML = "";
+    if(!list || list.length === 0){
+      catalog.innerHTML = `<div class="empty-msg">No products found.</div>`;
+      resultsCount.textContent = "0 results found";
+      return;
+    }
+    resultsCount.textContent = `${list.length} result${list.length === 1 ? '' : 's'} found`;
+    list.forEach((p, idx)=>{
+      const c = document.createElement('div');
+      c.className = 'card';
+      // fade-in with small stagger
+      setTimeout(()=> c.classList.add('show'), 60 * (idx+1));
+
+      // safe image fallback
+      const imgUrl = p.img_url && p.img_url.trim() !== '' ? p.img_url : 'https://via.placeholder.com/800x600?text=No+image';
+      c.innerHTML = `
+        <img src="${imgUrl}" alt="${(p.title||'Product').replace(/"/g,'')}" loading="lazy">
+        <div class="card-body">
+          <h3>${p.title || 'Untitled'}</h3>
+          <div class="price">${p.price || ''}</div>
+          <p class="desc">${p.description || ''}</p>
+          <button class="btn">View</button>
+        </div>
+      `;
+      c.querySelector('.btn').onclick = ()=> openModal(p);
+      catalog.appendChild(c);
+    });
+  }
+
+  function openModal(p){
+    active = p;
+    mdImg.src = p.img_url && p.img_url.trim() !== '' ? p.img_url : 'https://via.placeholder.com/1200x800?text=No+image';
+    mdImg.alt = p.title || 'Product image';
+    mdTitle.textContent = p.title || 'Untitled';
+    mdPrice.textContent = p.price || '';
+    mdDesc.textContent = p.description || '';
+    backdrop.style.display = 'flex';
+    backdrop.setAttribute('aria-hidden','false');
+    // trap focus (basic)
+    setTimeout(()=> closeBtn.focus(), 120);
+  }
+
+  function closeModal(){
+    backdrop.style.display = 'none';
+    backdrop.setAttribute('aria-hidden','true');
+  }
+  closeBtn.onclick = closeModal;
+  backdrop.onclick = (e)=> { if(e.target===backdrop) closeModal(); };
+
+  // WhatsApp redirect with product name
+  whatsapp.onclick = ()=>{
+    if(!active) return;
+    const num = "2348107436794"; // <-- replace with your number
+    const msg = encodeURIComponent(`I'd like to purchase the "${active.title}" from EL-D VOGUE.`);
+    window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+  };
+
+  // Enhanced Search: title, price, description
+  q.addEventListener('input', () => {
+    const raw = q.value || '';
+    const valNorm = normalize(raw.trim());
+    if(valNorm === '') {
+      render(products);
+      return;
+    }
+    const filtered = products.filter(p => {
+      const titleNorm = normalize(p.title);
+      const priceNorm = normalize(p.price);
+      const descNorm = normalize(p.description || '');
+      return titleNorm.includes(valNorm) || priceNorm.includes(valNorm) || descNorm.includes(valNorm);
+    });
+    render(filtered);
   });
-}
 
-function openModal(p){
-  active=p;
-  mdImg.src=p.img_url;
-  mdTitle.textContent=p.title;
-  mdPrice.textContent=p.price;
-  mdDesc.textContent=p.description;
-  backdrop.style.display="flex";
-}
-
-closeBtn.onclick=()=>backdrop.style.display="none";
-backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
-
-// WhatsApp redirect with product name
-whatsapp.onclick=()=>{
-  if(!active) return;
-  const num="2348107436794"; // replace with your number
-  const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from EL-D VOGUE.`);
-  window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
-};
-
-// Enhanced Search (title, price, description) with normalization
-q.addEventListener('input', () => {
-  const raw = q.value || '';
-  const val = raw.trim();
-  const valNorm = normalize(val);
-
-  // if query is empty -> show all
-  if(valNorm === '') {
-    render(products);
-    return;
-  }
-
-  const filtered = products.filter(p => {
-    const titleNorm = normalize(p.title);
-    const priceNorm = normalize(p.price);
-    const descNorm = normalize(p.description || '');
-
-    // match if the normalized query is a substring of any normalized field
-    return titleNorm.includes(valNorm) || priceNorm.includes(valNorm) || descNorm.includes(valNorm);
+  // Banner logic
+  window.addEventListener('load', ()=>{
+    // show banner after small delay for nicer reveal
+    setTimeout(()=> {
+      bannerBox.style.display = 'block';
+      bannerBox.setAttribute('aria-hidden','false');
+    }, 700);
   });
+  bannerClose.onclick = ()=> {
+    bannerBox.style.display = 'none';
+    bannerBox.setAttribute('aria-hidden','true');
+  };
 
-  render(filtered);
-});
-
-// === Banner Ad Logic ===
-const bannerBox = document.getElementById("bannerBox");
-const bannerClose = document.getElementById("bannerClose");
-
-// Show banner automatically on load
-window.addEventListener("load", () => {
-  bannerBox.style.display = "block";
-});
-
-// Close button hides banner
-bannerClose.onclick = () => {
-  bannerBox.style.display = "none";
-};
+  // Accessibility: escape to close modal
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') {
+      if(backdrop.style.display === 'flex') closeModal();
+    }
+  });
 </script>
 </body>
 </html>
